@@ -1,5 +1,6 @@
-import { toCsv } from "./src/common/csv";
-import klay from "./src/klay";
+import { toCsv } from "src/common/csv";
+import klay from "src/klay";
+import eth from "src/ethereum";
 
 const NETWORK = process.argv[2];
 const CONTRACT_ADDRESS = process.argv[3];
@@ -13,12 +14,13 @@ async function run() {
 
   switch (NETWORK.toUpperCase()) {
     case "ETH":
-      console.log("Not supported yet.");
+      const ownersETH = await eth(CONTRACT_ADDRESS);
+      toCsv(CONTRACT_ADDRESS, ownersETH);
       break;
 
     case "KLAY":
-      const owners = await klay(CONTRACT_ADDRESS);
-      toCsv(owners);
+      const ownersKLAY = await klay(CONTRACT_ADDRESS);
+      toCsv(CONTRACT_ADDRESS, ownersKLAY);
       break;
 
     case "MATIC":
