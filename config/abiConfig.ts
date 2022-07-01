@@ -1,19 +1,7 @@
+import { AbiItem } from "caver-js";
+
 interface ABIConfig {
-  abi: ABIItem[];
-}
-
-interface ABIItem {
-  inputs: ABIIOType[];
-  name: string;
-  outputs: ABIIOType[];
-  stateMutability: string;
-  type: string;
-}
-
-interface ABIIOType {
-  internalType: string;
-  name: string;
-  type: string;
+  abi: AbiItem[];
 }
 
 const abiConfig: ABIConfig = {
