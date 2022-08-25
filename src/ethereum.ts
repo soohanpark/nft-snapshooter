@@ -3,6 +3,7 @@ import Web3 from "web3";
 import abiConfig from "config/abiConfig";
 import networkConfig from "config/networkConfig";
 import interfaceId from "src/common/interfaceId";
+import { isSupport } from "src/common/tools";
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(networkConfig.eth.providerUrl)
@@ -12,16 +13,23 @@ async function eth(contractAddress: string) {
   console.log(`--- FETCH ${contractAddress} ---`);
   const ethContract = new web3.eth.Contract(abiConfig.abi, contractAddress);
 
-  // Check supports ERC721Enumerable
-  const isSupported = await ethContract.methods
-    .supportsInterface(interfaceId.ERC721Enumerable)
-    .call();
-  console.log(`isSupported? ${isSupported}`);
-  if (!isSupported) {
-    console.log(
-      `@@@ ERROR: ${contractAddress} is not implemented ERC721Enumerable.`
-    );
+  // Check supports
+  const isERC721 = await isSupport(ethContract, interfaceId.ERC721);
+  console.log(`Is ERC721? ${isERC721}`);
+  if (!isERC721) {
+    console.log(`@@@ ERROR: ${contractAddress} is not implemented ERC721.`);
     exit(1);
+  } else {
+    const isERC721Enumerable = await isSupport(
+      ethContract,
+      interfaceId.ERC721Enumerable
+    );
+    console.log(`IS ERC721Enumerable? ${isERC721Enumerable}`);
+    if (!isERC721Enumerable) {
+      console.log(
+        `@@@ WARNING: ${contractAddress} is not implemented ERC721Enumerable. So, there is a possible to error while fetching data.`
+      );
+    }
   }
 
   const totalSupply = await ethContract.methods.totalSupply().call();

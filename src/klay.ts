@@ -3,6 +3,7 @@ import { exit } from "process";
 import abiConfig from "config/abiConfig";
 import networkConfig from "config/networkConfig";
 import interfaceId from "src/common/interfaceId";
+import { isSupport } from "src/common/tools";
 
 const caver = new Caver(networkConfig.klay.providerUrl);
 
@@ -10,16 +11,23 @@ async function klay(contractAddress: string) {
   console.log(`--- FETCH ${contractAddress} ---`);
   const klayContract = new caver.contract(abiConfig.abi, contractAddress);
 
-  // Check supports ERC721Enumerable
-  const isSupported = await klayContract.methods
-    .supportsInterface(interfaceId.ERC721Enumerable)
-    .call();
-  console.log(`isSupported? ${isSupported}`);
-  if (!isSupported) {
-    console.log(
-      `@@@ ERROR: ${contractAddress} is not implemented ERC721Enumerable.`
-    );
+  // Check supports
+  const isERC721 = await isSupport(klayContract, interfaceId.ERC721);
+  console.log(`Is ERC721? ${isERC721}`);
+  if (!isERC721) {
+    console.log(`@@@ ERROR: ${contractAddress} is not implemented ERC721.`);
     exit(1);
+  } else {
+    const isERC721Enumerable = await isSupport(
+      klayContract,
+      interfaceId.ERC721Enumerable
+    );
+    console.log(`IS ERC721Enumerable? ${isERC721Enumerable}`);
+    if (!isERC721Enumerable) {
+      console.log(
+        `@@@ WARNING: ${contractAddress} is not implemented ERC721Enumerable. So, there is a possible to error while fetching data.`
+      );
+    }
   }
 
   const totalSupply: number = await klayContract.methods.totalSupply().call();
