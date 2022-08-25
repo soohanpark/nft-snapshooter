@@ -1,25 +1,27 @@
-import Caver from "caver-js";
 import { exit } from "process";
+import Web3 from "web3";
 import abiConfig from "config/abiConfig";
 import networkConfig from "config/networkConfig";
 import interfaceId from "src/common/interfaceId";
 import { isSupport } from "src/common/tools";
 
-const caver = new Caver(networkConfig.klay.providerUrl);
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(networkConfig.matic.providerUrl)
+);
 
-async function klay(contractAddress: string) {
+async function matic(contractAddress: string) {
   console.log(`--- FETCH ${contractAddress} ---`);
-  const klayContract = new caver.contract(abiConfig.abi, contractAddress);
+  const ethContract = new web3.eth.Contract(abiConfig.abi, contractAddress);
 
   // Check supports
-  const isERC721 = await isSupport(klayContract, interfaceId.ERC721);
+  const isERC721 = await isSupport(ethContract, interfaceId.ERC721);
   console.log(`Is ERC721? ${isERC721}`);
   if (!isERC721) {
     console.log(`@@@ ERROR: ${contractAddress} is not implemented ERC721.`);
     exit(1);
   } else {
     const isERC721Enumerable = await isSupport(
-      klayContract,
+      ethContract,
       interfaceId.ERC721Enumerable
     );
     console.log(`IS ERC721Enumerable? ${isERC721Enumerable}`);
@@ -30,7 +32,7 @@ async function klay(contractAddress: string) {
     }
   }
 
-  const totalSupply: number = await klayContract.methods.totalSupply().call();
+  const totalSupply = await ethContract.methods.totalSupply().call();
   console.log(`totalSupply: ${totalSupply}`);
   console.log(`Fetching...`);
 
@@ -58,21 +60,12 @@ async function klay(contractAddress: string) {
 
     owners = await _fetchOwnerOf(
       owners,
-      klayContract,
+      ethContract,
       totalSupply,
       idx * bunchEachCount, // 0
       (idx + 1) * bunchEachCount - 1 // totalSupply - 1
     );
   }
-
-  // const owners = {};
-  // for (let idx = 0; idx < totalSupply; idx++) {
-  //   const ownerAddress = await klayContract.methods.ownerOf(idx).call();
-  //   if (!(ownerAddress in owners)) {
-  //     owners[ownerAddress] = 0;
-  //   }
-  //   owners[ownerAddress] += 1;
-  // }
 
   return owners;
 }
@@ -106,4 +99,4 @@ async function _fetchOwnerOf(owners, ethContract_, totalSupply_, start_, end_) {
   });
 }
 
-export default klay;
+export default matic;

@@ -1,6 +1,7 @@
 import { toCsv } from "src/common/csv";
 import klay from "src/klay";
 import eth from "src/ethereum";
+import matic from "src/matic";
 
 const NETWORK = process.argv[2];
 const CONTRACT_ADDRESS = process.argv[3];
@@ -24,7 +25,8 @@ async function run() {
       break;
 
     case "MATIC":
-      console.log("Not supported yet.");
+      const ownersMATIC = await matic(CONTRACT_ADDRESS);
+      toCsv(CONTRACT_ADDRESS, ownersMATIC);
       break;
 
     default:
