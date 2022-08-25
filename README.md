@@ -1,7 +1,32 @@
 # NFT SNAPSHOOTER
 
-Program for NFT holder snapshots.  
-It supports `Klaytn` network(s). (`Ethereum`, `Polygon` will be supported soon.)
+- [NFT SNAPSHOOTER](#nft-snapshooter)
+  - [TL;DR](#tldr)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installing](#installing)
+    - [Run](#run)
+  - [Built With](#built-with)
+  - [Versioning](#versioning)
+  - [Authors](#authors)
+  - [License](#license)
+
+Script for NFT holder snapshots.  
+It supports `Klaytn`, `Ethereum`, `Polygon` networks.
+
+## TL;DR
+
+```bash
+# SET UP
+npm install -g yarn
+npm install -g typescript ts-node
+yarn install
+```
+
+```bash
+# RUN
+yarn start <"ETH" | "KLAY" | "MATIC"> <CONTRACT_ADDRESS>
+```
 
 ## Getting Started
 
@@ -54,16 +79,18 @@ Say what the step will be
 yarn install
 ```
 
+### Run
+
 When it all installed,
 
 ```bash
 yarn start <NETWORK_NAME> <CONTRACT_ADDRESS>
 ```
 
-- `NETWORK_NAME` will be such as `KLAY`, `ETH`, and et cetra.
+- `NETWORK_NAME` will be such as `KLAY`, `ETH`, and `MATIC`.
 - `CONTRACT_ADDRESS` will be an address what you want to snapshot.
 
-Finally, you can find the result in `/out/snapshot-DATETIME.csv`.
+Finally, you can find the result in `/out/snapshot_<DATETIME>.csv`.
 
 ## Built With
 
@@ -71,9 +98,9 @@ Finally, you can find the result in `/out/snapshot-DATETIME.csv`.
 - [caver-js](https://github.com/klaytn/caver-js) - Used to communicate with Klaytn network.
 - [web3.js](https://github.com/ChainSafe/web3.js) - Ethereum JavaScript API
 
-<!-- ## Versioning
+## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). -->
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Soohan-Park/nft-snapshooter/tags).
 
 ## Authors
 
